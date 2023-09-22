@@ -5,7 +5,9 @@
 """
 
 # Imports #
-import sys, os, transposition_cipher, ascii_art
+import sys
+import transposition_cipher
+import ascii_art
 from typing import List
 
 # Constants #
