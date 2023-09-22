@@ -8,9 +8,9 @@
 import sys, os, transposition_cipher, ascii_art
 from typing import List
 
-
 # Constants #
 FILE_PATH = "encrypted_msg.txt"
+
 
 # Functions #
 def file_handler(file_path, msg=None, read_or_write: str = 'w'):
@@ -42,7 +42,17 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
             reads cipher text from a given file
             :return List[int]: the encrypted message to be decrypted
         """
-        # TODO: Make the read from file to work - str to List[int]
+
+        # Opening file #
+        # noinspection PyBroadException
+        try:
+            with open(file_path, 'r') as file:
+                res = [int(x) for x in file.read().split(",")]
+                return res
+
+        # Other Exception handling #
+        except Exception:
+            return []
 
     # File Handling #
     match read_or_write:
@@ -75,36 +85,38 @@ def input_handler():
     """
 
     # Check the argument given by the user #
-    match sys.argv[1].lower():
-        # Encrypt message #
-        case 'encrypt':
-            print(ascii_art.ENCRYPT_ASCII)
+    try:
+        match sys.argv[1].lower():
+            # Encrypt message #
+            case 'encrypt':
+                print(ascii_art.ENCRYPT_ASCII)
 
-            # Input Handling #
-            msg = input("Oh dear Romeo. Enter thy message: ")
+                # Input Handling #
+                msg = input("Oh dear Romeo. Enter thy message: ")
 
-            # Empty message #
-            if msg == "":
-                file_handler(FILE_PATH, msg=msg)
+                # Empty message #
+                if msg == "":
+                    file_handler(FILE_PATH, msg=msg)
 
-            # Nonempty message #
-            else:
-                file_handler(FILE_PATH, ",".join([str(x) for x in transposition_cipher.encrypt(msg)]))
+                # Nonempty message #
+                else:
+                    file_handler(FILE_PATH, ",".join([str(x) for x in transposition_cipher.encrypt(msg)]))
 
-        # Decrypt message #
-        case 'decrypt':
-            print(ascii_art.DECRYPT_ASCII)
-            # TODO: Decrypt message
+            # Decrypt message #
+            case 'decrypt':
+                print(ascii_art.DECRYPT_ASCII)
 
-        # Unknown argument #
-        case _:
-            print("Invalid Input!")
+                cipher = file_handler(FILE_PATH, read_or_write='r')
+                if not cipher:
+                    print("empty message")
+                else:
+                    print(transposition_cipher.decrypt(cipher))
 
-def main() -> None:
-    """
-        The main Code of the software
-        :return None:
-    """
+            # Unknown argument #
+            case _:
+                print("Invalid Input!")
+    except IndexError:
+        print("Oh Romeo Romeo...\n\n\nENTER AN ARGUMENT!!!!!!")
 
 
 # Main Code #

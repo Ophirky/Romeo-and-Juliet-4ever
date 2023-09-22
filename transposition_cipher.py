@@ -18,9 +18,6 @@ ENCRYPTION_TABLE = {
     ' ': 98, ',': 99, '.': 100, ';': 101, "'": 102, '?': 103, '!': 104, ':': 105,
 }
 
-# Logging Constants #
-
-
 
 # Functions #
 def encrypt(msg: str) -> List[int]:
@@ -42,5 +39,6 @@ def decrypt(cipher: List[int]) -> str:
     """
 
     # taking the elements from the cipher list and translate them into the string
-    return "".join([list(ENCRYPTION_TABLE.keys())[list(ENCRYPTION_TABLE.values()).index(x) if x in ENCRYPTION_TABLE.values() else x]
-                    for x in cipher])
+
+    return "".join([list(ENCRYPTION_TABLE.keys())[list(ENCRYPTION_TABLE.values()).index(x)]
+                    if x in ENCRYPTION_TABLE.values() else str(x) for x in cipher])
