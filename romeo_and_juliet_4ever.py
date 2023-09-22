@@ -5,12 +5,12 @@
 """
 
 # Imports #
-import sys, os, transposition_cipher
+import sys, os, transposition_cipher, ascii_art
 from typing import List
 
 
 # Constants #
-
+FILE_PATH = "encrypted_msg.txt"
 
 # Functions #
 def file_handler(file_path, msg=None, read_or_write: str = 'w'):
@@ -42,6 +42,7 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
             reads cipher text from a given file
             :return List[int]: the encrypted message to be decrypted
         """
+        # TODO: Make the read from file to work - str to List[int]
 
     # File Handling #
     match read_or_write:
@@ -66,10 +67,46 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
                 print(err)
 
 
+def input_handler():
+    """
+    Handles the user input
+    :return str: returns the message to encrypt
+    :return None: if user chose decrypt
+    """
+
+    # Check the argument given by the user #
+    match sys.argv[1].lower():
+        # Encrypt message #
+        case 'encrypt':
+            print(ascii_art.ENCRYPT_ASCII)
+
+            # Input Handling #
+            msg = input("Oh dear Romeo. Enter thy message: ")
+
+            # Empty message #
+            if msg == "":
+                file_handler(FILE_PATH, msg=msg)
+
+            # Nonempty message #
+            else:
+                file_handler(FILE_PATH, ",".join([str(x) for x in transposition_cipher.encrypt(msg)]))
+
+        # Decrypt message #
+        case 'decrypt':
+            print(ascii_art.DECRYPT_ASCII)
+            # TODO: Decrypt message
+
+        # Unknown argument #
+        case _:
+            print("Invalid Input!")
+
+def main() -> None:
+    """
+        The main Code of the software
+        :return None:
+    """
+
+
 # Main Code #
 if __name__ == '__main__':
-    # print(transposition_cipher.encrypt("My bounty"))
-    # print(transposition_cipher.decrypt([48, 96, 98, 13, 36, 92, 35, 91, 96]))
-
-    if not os.path.isfile("text.txt"):
-        file_handler(file_path=r"C:\Users\ophir\Desktop\text.txt", msg="Hello World!", read_or_write='w')
+    input_handler()

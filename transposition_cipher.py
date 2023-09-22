@@ -31,7 +31,7 @@ def encrypt(msg: str) -> List[int]:
     """
 
     # translating the letters to the compatible symbol into a list of the cipher text
-    return [ENCRYPTION_TABLE[x] for x in msg if x in ENCRYPTION_TABLE.keys()]
+    return [ENCRYPTION_TABLE[x] if x in ENCRYPTION_TABLE.keys() else x for x in msg]
 
 
 def decrypt(cipher: List[int]) -> str:
@@ -42,5 +42,5 @@ def decrypt(cipher: List[int]) -> str:
     """
 
     # taking the elements from the cipher list and translate them into the string
-    return "".join([list(ENCRYPTION_TABLE.keys())[list(ENCRYPTION_TABLE.values()).index(x)]
-                    for x in cipher if x in ENCRYPTION_TABLE.values()])
+    return "".join([list(ENCRYPTION_TABLE.keys())[list(ENCRYPTION_TABLE.values()).index(x) if x in ENCRYPTION_TABLE.values() else x]
+                    for x in cipher])
