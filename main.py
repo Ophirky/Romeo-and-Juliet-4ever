@@ -6,13 +6,20 @@
 
 # Imports #
 import sys
+import os
+import logging
 import transposition_cipher
 import ascii_art
 from typing import List
 
+
 # Constants #
 FILE_PATH = "encrypted_msg.txt"
 
+LOG_LEVEL = logging.WARNING
+LOG_DIR = r"log"
+LOG_FILE = LOG_DIR  + r"\log.log"
+LOG_FORMAT = "%(asctime)s | %(levelname)s | %(message)s"
 
 # Functions #
 def file_handler(file_path, msg=None, read_or_write: str = 'w'):
@@ -37,7 +44,7 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
 
         # Other Exception handling #
         except Exception as error:
-            print(error)
+            logging.error(error)
 
     def read_from_file() -> List[int]:
         """
@@ -49,12 +56,18 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
         # noinspection PyBroadException
         try:
             with open(file_path, 'r') as file:
-                res = [int(x) for x in file.read().split(",")]
+                res = file.read()
+                if not res:
+                    return []
+                res = [int(x) for x in res.split(",")]
                 return res
 
         # Other Exception handling #
-        except Exception:
-            return []
+        except FileNotFoundError as error:
+            logging.error(error)
+
+        except Exception as error:
+            logging.error(error)
 
     # File Handling #
     match read_or_write:
@@ -66,7 +79,7 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
 
             # Exception handling #
             except Exception as err:
-                print(err)
+                logging.error(err)
 
         # Write to file #
         case 'w':
@@ -76,10 +89,9 @@ def file_handler(file_path, msg=None, read_or_write: str = 'w'):
 
             # Exception handling #
             except Exception as err:
-                print(err)
+                logging.error(err)
 
-
-def input_handler():
+def main():
     """
     Handles the user input
     :return str: returns the message to encrypt
@@ -110,17 +122,29 @@ def input_handler():
 
                 cipher = file_handler(FILE_PATH, read_or_write='r')
                 if not cipher:
-                    print("empty message")
+                    print("No Message")
                 else:
                     print(transposition_cipher.decrypt(cipher))
 
             # Unknown argument #
             case _:
+                logging.warning("Invalid argument given")
                 print("Invalid Input!")
+
     except IndexError:
+        logging.error("No argument given")
         print("Oh Romeo Romeo...\n\n\nENTER AN ARGUMENT!!!!!!")
+
+    except Exception as err:
+        logging.error(err)
 
 
 # Main Code #
 if __name__ == '__main__':
-    input_handler()
+    # Setting up the log #
+    if not os.path.isdir(LOG_DIR):
+        os.makedirs(LOG_DIR)
+    logging.basicConfig(level=LOG_LEVEL, filename=LOG_FILE, format=LOG_FORMAT)
+    
+    # Calling the main function #
+    main()
